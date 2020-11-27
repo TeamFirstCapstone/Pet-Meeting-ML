@@ -1,9 +1,7 @@
-from flask import Flask, url_for, request, jsonify
+from flask import Flask,request
 import pandas as pd
-import numpy as np
 import math
 from surprise import Dataset
-import sys
 from surprise import Reader
 from surprise import SVDpp
 from surprise.model_selection import train_test_split
