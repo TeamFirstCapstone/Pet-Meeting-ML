@@ -1,61 +1,19 @@
-from flask import Flask, render_template, url_for, request, jsonify
+from flask import Flask, url_for, request, jsonify
 import pandas as pd
 import numpy as np
 import math
-# import pandas as pd
 from surprise import Dataset
 import sys
-import pymysql
-
 from surprise import Reader
 from surprise import SVDpp
 from surprise.model_selection import train_test_split
 from collections import defaultdict
 
+import utils
+
 top_n = defaultdict(list)
 
 app = Flask(__name__)
-
-# db 접속
-
-
-def get_connection():
-    conn = pymysql.connect(host='petmeeting.cvsejgvxoucu.us-east-2.rds.amazonaws.com',
-                           user='admin', password='petmeeting123', db='petmeeting', charset='utf8')
-    return conn
-
-# {pet_id, user_id, Rating} 형식으로, 모든 평가 데이터를 가져온다.
-
-
-def get_default_ratings():
-
-    conn = get_connection()
-
-    sql = '''
-		SELECT k.PID, v.UID, v.Score FROM 
-		(SELECT p.PID, s.SID, s.UID
-		FROM petmeeting.Pet p, petmeeting.Showoff s 
-		WHERE p.UID = s.UID) AS k
-		LEFT JOIN petmeeting.Vote AS v ON k.SID = v.SID;
-    '''
-
-    cursor = conn.cursor()
-    cursor.execute(sql)
-    row = cursor.fetchall()
-
-    data_list = []
-
-    for obj in row:
-        data_dic = {
-            'petId': obj[0],
-            'userId': obj[1],
-         			'rating': obj[2],
-        }
-        data_list.append(data_dic)
-
-    conn.close()
-    return data_list
-
 
 # 유저별 rating을 기반으로, 가장 관련성이 높은 10개의 pet_id를 산출한다.
 def get_top_n(predictions, n):
@@ -94,8 +52,7 @@ def predict():
 	print("--predict start--------------------------------")
 
 	# request
-	json_data = get_default_ratings()
-	data = pd.DataFrame(json_data)
+	data = pd.DataFrame(utils.get_default_ratings())
 
 	reader = Reader(rating_scale=(0, 5))
 	data = Dataset.load_from_df(df=data, reader=reader)
