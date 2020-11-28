@@ -58,12 +58,6 @@ class Database(metaclass=Singleton):
 
 db = Database('petmeeting')
 
-# # db 접속
-# def get_connection():
-#     conn = pymysql.connect(host='petmeeting.cvsejgvxoucu.us-east-2.rds.amazonaws.com',
-#                            user='admin', password='petmeeting123', db='petmeeting', charset='utf8')
-#     return conn
-
 # {pet_id, user_id, Rating} 형식으로, 모든 평가 데이터를 가져온다.
 def get_default_ratings():
     
@@ -144,7 +138,6 @@ def predict():
 
 # choosing_page에 접속했을 때, user_id를 받아와서 top_10 pet id를 return
 # /pets -> /choosing_page
-# user_id = request.args.get("uid", 0) -> user_id = requests.user_id
 @app.route('/choosing_page', methods=['GET', 'POST'])
 def give_top_n():
 	global user_id
