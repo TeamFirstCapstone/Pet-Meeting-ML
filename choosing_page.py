@@ -1,4 +1,4 @@
-from flask import Flask,request
+from flask import Flask,request, jsonify
 import pandas as pd
 import math
 from surprise import Dataset
@@ -145,10 +145,9 @@ def give_top_n():
 	global top_n
 
 	try:
-	    return str(top_n[int(user_id)])
+	    return jsonify(result=top_n[int(user_id)])
 	except:
-		return str([])
-
+		return jsonify(result=[])
 
 # show off page 에 user가 새로운 vote를 할 때 db가 변하므로 새로 model을 train 시켜야 한다.
 @app.route('/show_off_page', methods=['GET', 'POST'])
