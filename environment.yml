@@ -1,0 +1,5 @@
+name: test
+channels:
+  - defaults
+prefix: C:\Users\stam0\anaconda3\envs\test
+
